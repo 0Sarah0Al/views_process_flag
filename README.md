@@ -5,7 +5,7 @@ You can add this field to as many entity types as you like by editing the functi
 
 After that go to your views' table and add a field called 'process flag' under the 'global' category.
 You can now toggle the color of the highlighted rows.
-See image. [here](https://github.com/Sarahphp1/views_process_flag/process_flag_example_views.png)
+See image. [here](https://github.com/Sarahphp1/views_process_flag/blob/master/process_flag_example_views.png)
 
 
 
