@@ -1,7 +1,7 @@
 The purpose of this module is to provide the ability to highlight views' tables. A use case example, will be to mark/flag a row as processed/read in a table of node's articles or pages.
 
 When you enable this module, you have to run update.php or 'drush updb' so that a base field is added to your node_field_data table.
-You can add this field to as many entities as you like by editing the function views_process_flag_entity_base_field_info() in the .module file.
+You can add this field to as many entity types as you like by editing the function views_process_flag_entity_base_field_info() in the .module file.
 
 After that go to your views' table and add a field called 'process flag' under the 'global' category.
 You can now toggle the color of the highlighted rows.
