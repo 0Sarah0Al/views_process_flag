@@ -1,0 +1,50 @@
+<?php
+
+/**
+ * @file
+ * Contains views_process_flag.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+
+/**
+ * Implements hook_help().
+ */
+function views_process_flag_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+
+    case 'help.page.views_process_flag':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Custom views field to flag/mark a row as processed') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_entity_base_field_info().
+ */
+function views_process_flag_entity_base_field_info(EntityTypeInterface $entity_type) {
+    $fields = [];
+    if ($entity_type->id() === 'node') {
+        $fields['process_flag'] = BaseFieldDefinition::create('boolean')
+            ->setLabel(t('Process flag field'))
+            ->setDescription(t('Whether or not entity can be flagged as processed.'))
+            ->setDefaultValue(NULL)
+            ->setDisplayConfigurable('form', TRUE)
+           ->setDisplayConfigurable('view', TRUE);
+        return $fields;
+    }
+}
+
+/**
+ * Implements hook_page_attachments().
+ */
+function views_process_flag_page_attachments(array &$attachments) {
+    $attachments['#attached']['library'][] =
+        'views_process_flag/views_process_flag_page.general';
+}

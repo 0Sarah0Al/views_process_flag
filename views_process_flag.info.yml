@@ -1,0 +1,7 @@
+name: Views Process Flag
+type: module
+description: Custom views field to flag/mark a row as processed.
+core: 8.x
+package: 'Views'
+dependencies:
+  - drupal:views

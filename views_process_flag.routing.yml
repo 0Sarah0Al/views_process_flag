@@ -1,0 +1,7 @@
+views_process_flag.link:
+  path: '/nojs/processed/{entity_type}/{id}/{row_index}'
+  defaults:
+    _controller: '\Drupal\views_process_flag\Controller\ViewProcessFlagAjaxController::processFlagLinkAjax'
+    -title: 'Process flag field link'
+  requirements:
+    _permission: 'access content'
