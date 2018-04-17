@@ -22,7 +22,6 @@ class ViewsProcessFlag extends FieldPluginBase {
 
     protected $text;
     protected $color;
-    protected $clicked;
     protected $link;
     protected $entity_type;
     protected $id;
@@ -34,7 +33,6 @@ class ViewsProcessFlag extends FieldPluginBase {
     public function __construct() {
         $this->text = $this->t('Done?');
         $this->color = 'default';
-        $this->clicked = '';
     }
 
     /**
@@ -88,12 +86,10 @@ class ViewsProcessFlag extends FieldPluginBase {
         if ($this->process_flag === "0") {
             $this->text = $this->t('No');
             $this->color = 'red';
-            $this->clicked = 'clicked';
         }
         elseif ($this->process_flag === "1") {
             $this->text = $this->t('Yes');
             $this->color = 'green';
-            $this->clicked = 'clicked';
         }
     }
 
@@ -105,7 +101,7 @@ class ViewsProcessFlag extends FieldPluginBase {
         ]);
         $this->link = Link::fromTextAndUrl($this->text, $url)->toRenderable();
         $this->link['#attributes'] = array(
-            'class' => array('flag-operation', 'use-ajax', $this->color, $this->clicked),
+            'class' => array('flag-operation', 'use-ajax', $this->color),
             'id' => "processed-{$this->row_index}",
         );
     }
