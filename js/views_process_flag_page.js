@@ -9,17 +9,25 @@
         attach: function (context, settings) {
             // Iterate over all Process Flag operations links
             $('.flag-operation', context).once('viewsRowColor').each(function () {
-                // Update parent row colors
+                // Initial parent row colors
                 if ($(this).hasClass('green')) {
-                    $(this).parents("tr").addClass("highlight-green");
+                    $(this).parents('tr').addClass('highlight-green');
                 }
                 else if ($(this).hasClass('red')) {
-                    $(this).parents("tr").addClass("highlight-red");
+                    $(this).parents('tr').addClass('highlight-red');
                 }
-
-                // Create an AJAX link to change Process Flag value
-                $(this).click(function(){ toggleRow(this); });
             });
+
+            /**
+             * Update the DOM once the flag has been saved
+             * 
+             * @param {object} ajax 
+             * @param {object} response 
+             * @param {object} status 
+             */
+            Drupal.AjaxCommands.prototype.updateFlagLink = function (ajax, response, status) {
+                toggleRow($(response.row));
+            };
         }
     }
 
@@ -32,13 +40,13 @@
         $(row).toggleClass('green red');
 
         if ($(row).hasClass('green')) {
-            $(row).parents("tr").addClass("highlight-green");
-            $(row).parents("tr").removeClass("highlight-red");
+            $(row).parents('tr').addClass('highlight-green');
+            $(row).parents('tr').removeClass('highlight-red');
             $(row).text('Yes').fadeIn();
         }
         else {
-            $(row).parents("tr").addClass("highlight-red");
-            $(row).parents("tr").removeClass("highlight-green");
+            $(row).parents('tr').addClass('highlight-red');
+            $(row).parents('tr').removeClass('highlight-green');
             $(row).text('No').fadeIn();
         }
     }
