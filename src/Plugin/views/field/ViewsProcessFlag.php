@@ -6,6 +6,8 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\views\Plugin\views\field\FieldPluginBase;
 use Drupal\views\Plugin\views\field\UncacheableFieldHandlerTrait;
 use Drupal\views\ResultRow;
+use Drupal\Core\Url;
+use Drupal\Core\Link;
 
 /**
  * A handler to provide a field that is completely custom by the administrator.
@@ -18,12 +20,29 @@ class ViewsProcessFlag extends FieldPluginBase {
 
     use UncacheableFieldHandlerTrait;
 
-  /**
-   * {@inheritdoc}
-   */
-  public function query() {
-    // Do nothing -- to override the parent query.
-  }
+    protected $text;
+    protected $color;
+    protected $clicked;
+    protected $link;
+    protected $entity_type;
+    protected $id;
+    protected $process_flag;
+
+    /**
+     * Constructs a new ViewsProcessFlag instance.
+     */
+    public function __construct() {
+        $this->text = $this->t('Done?');
+        $this->color = 'default';
+        $this->clicked = '';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function query() {
+        // Do nothing -- to override the parent query.
+    }
 
     /**
      * {@inheritdoc}
@@ -46,26 +65,48 @@ class ViewsProcessFlag extends FieldPluginBase {
      * {@inheritdoc}
      */
     public function render(ResultRow $values) {
-
-        $row_index = $this->view->row_index;
-        $entity = $values->_entity;
-        $entity_type = $entity->getEntityType()->id();
-        $id = $entity->id();
-        $loaded_entity = $entity->load($id);
-        $process_flag_value = $loaded_entity->get('process_flag')->value;
-
-        if ($process_flag_value === "1") {
-            $link = "<a href=\"nojs/processed/{$entity_type}/{$id}/{$row_index}\" class=\"use-ajax clicked green\" id=\"processed-{$row_index}\">" . $this->t('Yes') . "</a>";
-        }
-        elseif ($process_flag_value === "0") {
-            $link = "<a href=\"nojs/processed/{$entity_type}/{$id}/{$row_index}\" class=\"use-ajax clicked red\" id=\"processed-{$row_index}\">" . $this->t('No') . "</a>";
-        }
-        else {
-            $link = "<a href=\"nojs/processed/{$entity_type}/{$id}/{$row_index}\" class=\"use-ajax clicked\" id=\"processed-{$row_index}\">" . $this->t('Done?') . "</a>";
-        }
+        $this->processValues($values);
+        $this->setLinkValues();
+        $this->buildLink();
+        
         return [
-            '#markup' => $link,
+            '#markup' => render($this->link),
             '#cache' => ['max-age' => 0],
         ];
+    }
+
+    protected function processValues($values) {
+        $this->row_index = $this->view->row_index;
+        $entity = $values->_entity;
+        $this->entity_type = $entity->getEntityType()->id();
+        $this->id = $entity->id();
+        $loaded_entity = $entity->load($this->id);
+        $this->process_flag = $loaded_entity->get('process_flag')->value;
+    }
+
+    protected function setLinkValues() {
+        if ($this->process_flag === "0") {
+            $this->text = $this->t('No');
+            $this->color = 'red';
+            $this->clicked = 'clicked';
+        }
+        elseif ($this->process_flag === "1") {
+            $this->text = $this->t('Yes');
+            $this->color = 'green';
+            $this->clicked = 'clicked';
+        }
+    }
+
+    protected function buildLink() {
+        $url = Url::fromRoute('views_process_flag.link', [
+            'entity_type' => $this->entity_type,
+            'id' => $this->id,
+            'row_index' => $this->row_index,
+        ]);
+        $this->link = Link::fromTextAndUrl($this->text, $url)->toRenderable();
+        $this->link['#attributes'] = array(
+            'class' => array('flag-operation', 'use-ajax', $this->color, $this->clicked),
+            'id' => "processed-{$this->row_index}",
+        );
     }
 }
