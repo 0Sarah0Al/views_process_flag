@@ -6,6 +6,9 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\views_process_flag\Ajax\UpdateLinkCommand;
+
 /**
  * Provides route responses for the views process flag link.
  */
@@ -52,8 +55,6 @@ class ViewProcessFlagAjaxController extends ControllerBase {
      *   A simple response.
      */
     public function processFlagLinkAjax() {
-
-        $result[] ='';
         $entity_type = $this->routeMatch->getParameter('entity_type');
         $entity_id = $this->routeMatch->getParameter('id');
         $row_index = $this->routeMatch->getParameter('row_index');
@@ -65,22 +66,14 @@ class ViewProcessFlagAjaxController extends ControllerBase {
           $entity->save();
           $process_flag = $entity->get('process_flag')->value;
         }
-        elseif ($process_flag_value === "0") {
+        else {
           $entity->set('process_flag', "1");
           $entity->save();
           $process_flag = $entity->get('process_flag')->value;
         }
-        else {
-            $entity->set('process_flag', "1");
-            $entity->save();
-            $process_flag = $entity->get('process_flag')->value;
-        }
 
-        $result['#attached']['library'][]='views_process_flag/views_process_flag.general';
-        $result['#attached']['drupalSettings']['views_process_flag']['process_flag'] = $process_flag;
-        $result['#attached']['drupalSettings']['views_process_flag']['row_index'] = $row_index;
-        $result['#cache']['max-age'] = 0;
-
-        return $result;
+        $response = new AjaxResponse();
+        $response->addCommand(new UpdateLinkCommand("#processed-{$row_index}"));
+        return $response;
     }
 }
