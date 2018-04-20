@@ -10,13 +10,11 @@
 * Implements hook_views_data().
 */
 function views_process_flag_views_data() {
-
-    $data['views']['table']['group'] = t('Custom Global');
+    $data['views']['table']['group'] = t('Global');
     $data['views']['table']['join'] = [
       // #global is a special flag which allows a table to appear all the time.
       '#global' => [],
     ];
-
 
     $data['views']['views_process_flag_field'] = [
         'title' => t('Process Flag'),
