@@ -20,21 +20,6 @@ class ViewsProcessFlag extends FieldPluginBase {
 
     use UncacheableFieldHandlerTrait;
 
-    protected $text;
-    protected $color;
-    protected $link;
-    protected $entity_type;
-    protected $id;
-    protected $process_flag;
-
-    /**
-     * Constructs a new ViewsProcessFlag instance.
-     */
-    public function __construct() {
-        $this->text = $this->t('Done?');
-        $this->color = 'default';
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -63,46 +48,50 @@ class ViewsProcessFlag extends FieldPluginBase {
      * {@inheritdoc}
      */
     public function render(ResultRow $values) {
-        $this->processValues($values);
-        $this->setLinkValues();
-        $this->buildLink();
-        
         return [
-            '#markup' => render($this->link),
+            '#markup' => $this->buildLink($values),
             '#cache' => ['max-age' => 0],
         ];
     }
 
-    protected function processValues($values) {
-        $this->row_index = $this->view->row_index;
+    protected function getText($flag) {
+        $text = $this->t('Done?');
+        if ($flag === "0") {
+            $text = $this->t('No');
+        }
+        elseif ($flag === "1") {
+            $text = $this->t('Yes');
+        }
+        return $text;
+    }
+
+    protected function getColor($flag) {
+        $color = 'default';
+        if ($flag === "0") {
+            $color = 'red';
+        }
+        elseif ($flag === "1") {
+            $color = 'green';
+        }
+        return $color;
+    }
+
+    protected function buildLink($values) {
         $entity = $values->_entity;
-        $this->entity_type = $entity->getEntityType()->id();
-        $this->id = $entity->id();
-        $loaded_entity = $entity->load($this->id);
-        $this->process_flag = $loaded_entity->get('process_flag')->value;
-    }
-
-    protected function setLinkValues() {
-        if ($this->process_flag === "0") {
-            $this->text = $this->t('No');
-            $this->color = 'red';
-        }
-        elseif ($this->process_flag === "1") {
-            $this->text = $this->t('Yes');
-            $this->color = 'green';
-        }
-    }
-
-    protected function buildLink() {
+        $entity_type = $entity->getEntityType()->id();
+        $id = $entity->id();
+        $loaded_entity = $entity->load($id);
+        $flag = $loaded_entity->get('process_flag')->value;
         $url = Url::fromRoute('views_process_flag.link', [
-            'entity_type' => $this->entity_type,
-            'id' => $this->id,
-            'row_index' => $this->row_index,
+            'entity_type' => $entity_type,
+            'id' => $id,
+            'row_index' => $this->view->row_index,
         ]);
-        $this->link = Link::fromTextAndUrl($this->text, $url)->toRenderable();
-        $this->link['#attributes'] = array(
-            'class' => array('flag-operation', 'use-ajax', $this->color),
-            'id' => "processed-{$this->row_index}",
+        $link = Link::fromTextAndUrl($this->getText($flag), $url)->toRenderable();
+        $link['#attributes'] = array(
+            'class' => array('flag-operation', 'use-ajax', $this->getColor($flag)),
+            'id' => "processed-{$this->view->row_index}",
         );
+        return render($link);
     }
 }
