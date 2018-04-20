@@ -46,5 +46,5 @@ function views_process_flag_entity_base_field_info(EntityTypeInterface $entity_t
  */
 function views_process_flag_page_attachments(array &$attachments) {
     $attachments['#attached']['library'][] =
-        'views_process_flag/views_process_flag_page.general';
+        'views_process_flag/views_process_flag.general';
 }

@@ -1,9 +1,9 @@
-views_process_flag_page.general:
+views_process_flag.general:
   css:
     theme:
       css/views_process_flag.css: {}
   js:
-    js/views_process_flag_page.js: {}
+    js/views_process_flag.js: {}
   dependencies:
     - core/jquery
     - core/jquery.once
