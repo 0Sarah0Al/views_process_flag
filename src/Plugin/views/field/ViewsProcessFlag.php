@@ -68,10 +68,10 @@ class ViewsProcessFlag extends FieldPluginBase {
     protected function getColor($flag) {
         $color = 'default';
         if ($flag === "0") {
-            $color = 'red';
+            $color = 'off';
         }
         elseif ($flag === "1") {
-            $color = 'green';
+            $color = 'on';
         }
         return $color;
     }
