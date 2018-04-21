@@ -7,17 +7,6 @@
      */
     Drupal.behaviors.viewsRowColor = {
         attach: function (context, settings) {
-            // Iterate over all Process Flag operations links
-            $('.flag-operation', context).once('viewsRowColor').each(function () {
-                // Initial parent row colors
-                if ($(this).hasClass('green')) {
-                    $(this).parents('tr').addClass('highlight-green');
-                }
-                else if ($(this).hasClass('red')) {
-                    $(this).parents('tr').addClass('highlight-red');
-                }
-            });
-
             /**
              * Update the DOM once the flag has been saved
              * 
@@ -37,16 +26,16 @@
      * @param {object} row 
      */
     function toggleRow(row) {
-        $(row).toggleClass('green red');
+        $(row).toggleClass('on off');
 
-        if ($(row).hasClass('green')) {
-            $(row).parents('tr').addClass('highlight-green');
-            $(row).parents('tr').removeClass('highlight-red');
+        if ($(row).hasClass('on')) {
+            $(row).parents('tr').addClass('highlight-on');
+            $(row).parents('tr').removeClass('highlight-off');
             $(row).text('Yes').fadeIn();
         }
         else {
-            $(row).parents('tr').addClass('highlight-red');
-            $(row).parents('tr').removeClass('highlight-green');
+            $(row).parents('tr').addClass('highlight-off');
+            $(row).parents('tr').removeClass('highlight-on');
             $(row).text('No').fadeIn();
         }
     }
