@@ -42,12 +42,12 @@
         if ($(row).hasClass('green')) {
             $(row).parents('tr').addClass('highlight-green');
             $(row).parents('tr').removeClass('highlight-red');
-            $(row).text('Yes').fadeIn();
+            $(row).text(Drupal.t('Yes').fadeIn());
         }
         else {
             $(row).parents('tr').addClass('highlight-red');
             $(row).parents('tr').removeClass('highlight-green');
-            $(row).text('No').fadeIn();
+            $(row).text(Drupal.t('No').fadeIn());
         }
     }
 

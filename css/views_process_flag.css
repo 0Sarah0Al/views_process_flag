@@ -1,6 +1,6 @@
 tr.highlight-green {
-	  background-color: #e7f7e8;
+	  background-color: #e7f7e8 !important;
 }
 tr.highlight-red {
-	background-color: #f7e7ea;
+	background-color: #f7e7ea !important;
 }
